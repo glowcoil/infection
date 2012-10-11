@@ -1,16 +1,16 @@
 (function() {
   var canvas, context;
-  var width = 5;
-  var height = 5;
-  var cellWidth = 100;
-  var cellHeight = 100;
+  var width = 20;
+  var height = 20;
+  var cellWidth = 32;
+  var cellHeight = 32;
 
   var board = [[]];
 
   for (var y = 0; y < height; y++) {
     board[y] = [];
     for (var x = 0; x < width; x++) {
-      board[y][x] = { state: "dying", color: "gray" };
+      board[y][x] = { state: "dead", color: "gray" };
     }
   }
 
@@ -51,14 +51,16 @@
     board = buffer;
   };
 
-  board[0][0] = { state: "dying", color: "blue" };
-  board[0][1] = { state: "dying", color: "red" };
+  board[0][10] = { state: "alive", color: "blue" };
+  board[0][11] = { state: "alive", color: "blue" };
+  board[11][10] = { state: "alive", color: "red" };
+  board[11][11] = { state: "alive", color: "red" };
+  board[12][10] = { state: "dying", color: "red" };
+  board[12][11] = { state: "dying", color: "red" };
 
-  update = function() {    
+  update = function() {
     step();
     draw();
-    
-    setTimeout(update, 1000 * parseFloat(document.getElementById("delay").value));
   };
   
   draw = function() {
@@ -75,21 +77,32 @@
         }
         switch (board[y][x].state) {
           case "alive": fillStyle += "1)"; break;
-          case "dying": fillstyle += "1)"; break;
+          case "dying": fillStyle += "0.75)"; break;
           case "dead":  fillStyle += "0)"; break;
         }
         context.fillStyle = fillStyle;
-        context.fillRect(x * cellWidth, y * cellHeight, (x + 1) * cellWidth, (y + 1) * cellHeight);
+        context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
       }
     }
   }
+
+  printBoard = function() {
+    var str = "";
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        str += (+(board[y][x].state == "alive"))*2 + +(board[y][x].state == "dying"); str += " ";
+      }
+      str += "\n";
+    }
+    alert(str);
+  };
 
   window.onload = function() {
     canvas = document.getElementById("canvas");
     canvas.width = width * cellWidth;
     canvas.height = height * cellHeight;
     context = canvas.getContext("2d");
-    setTimeout(function() { update() }, 1000 * parseFloat(document.getElementById("delay").value));
+    setInterval(function() { update() }, 1000 * document.getElementById("delay").value);
     draw();
   };
 })();
