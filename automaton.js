@@ -1,5 +1,5 @@
 (function() {
-  var canvas, context;
+  var canvas, context, canvasX, canvasY;
   var width = 20;
   var height = 20;
   var cellWidth = 32;
@@ -85,17 +85,33 @@
       }
     }
   }
-
-  printBoard = function() {
-    var str = "";
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        str += (+(board[y][x].state == "alive"))*2 + +(board[y][x].state == "dying"); str += " ";
+  
+  function onmousemove(event) {
+    var totalOffsetX = 0;
+    var totalOffsetY = 0;
+    var currentElement = canvas;
+    do {
+      totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+      totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+    } while (currentElement = currentElement.offsetParent)
+    canvasX = event.pageX - totalOffsetX;
+    canvasY = event.pageY - totalOffsetY;
+    
+  }
+  function onclick() {
+    board[Math.floor(canvasY / cellHeight)][Math.floor(canvasX / cellWidth)] = { state: "alive", color: "red"};//getPaintBrush();
+  }
+  
+  function getPaintbrush() {
+    var color;
+    var colors = document.getElementsByName("color");
+    for (i = 0; i < colors.length; i++) {
+      if (colors[i].checked) {
+        color = colors[i].value;
       }
-      str += "\n";
     }
-    alert(str);
-  };
+    return { state: "alive", color: color };
+  }
 
   window.onload = function() {
     canvas = document.getElementById("canvas");
@@ -103,6 +119,14 @@
     canvas.height = height * cellHeight;
     context = canvas.getContext("2d");
     setInterval(function() { update() }, 1000 * document.getElementById("delay").value);
+    var onclickIntervalId;
+    canvas.addEventListener("mousedown", function(event) {
+      onclickIntervalId = setInterval(onclick, 10);
+    }, false);
+    canvas.addEventListener("mouseup", function() {
+      clearInterval(onclickIntervalId);
+    }, false);
+    canvas.addEventListener("mousemove", onmousemove);
     draw();
   };
 })();
