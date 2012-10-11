@@ -99,15 +99,15 @@
     
   }
   function onclick() {
-    board[Math.floor(canvasY / cellHeight)][Math.floor(canvasX / cellWidth)] = { state: "alive", color: "red"};//getPaintBrush();
+    board[Math.floor(canvasY / cellHeight)][Math.floor(canvasX / cellWidth)] = getPaintBrush();
   }
   
-  function getPaintbrush() {
+  function getPaintBrush() {
     var color;
-    var colors = document.getElementsByName("color");
-    for (i = 0; i < colors.length; i++) {
+    var colors = document.getElementsByName("color");    
+    for (i = 0; i < colors.length; i++) {      
       if (colors[i].checked) {
-        color = colors[i].value;
+        color = colors[i].value;        
       }
     }
     return { state: "alive", color: color };
