@@ -100,6 +100,7 @@
   }
   function onclick() {
     board[Math.floor(canvasY / cellHeight)][Math.floor(canvasX / cellWidth)] = getPaintBrush();
+    draw();
   }
   
   function getPaintBrush() {
@@ -118,7 +119,21 @@
     canvas.width = width * cellWidth;
     canvas.height = height * cellHeight;
     context = canvas.getContext("2d");
-    setInterval(function() { update() }, 1000 * document.getElementById("delay").value);
+    
+    var updateIntervalId = setInterval(function() { update() }, 1000 * document.getElementById("delay").value);
+    var running = true;
+    var button = document.getElementById("pause");
+    button.addEventListener("click", function() {
+      running = !running;
+      if (running) {
+        updateIntervalId = setInterval(function() { update() }, 1000 * document.getElementById("delay").value);
+        button.value = "stop";
+      } else {
+        clearInterval(updateIntervalId);
+        button.value = "start";
+      }
+    }, false);
+    
     var onclickIntervalId;
     canvas.addEventListener("mousedown", function(event) {
       onclickIntervalId = setInterval(onclick, 10);
@@ -126,7 +141,7 @@
     canvas.addEventListener("mouseup", function() {
       clearInterval(onclickIntervalId);
     }, false);
-    canvas.addEventListener("mousemove", onmousemove);
+    canvas.addEventListener("mousemove", onmousemove, false);
     draw();
   };
 })();
