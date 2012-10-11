@@ -138,7 +138,7 @@
     canvas.addEventListener("mousedown", function(event) {
       onclickIntervalId = setInterval(onclick, 10);
     }, false);
-    canvas.addEventListener("mouseup", function() {
+    document.addEventListener("mouseup", function() {
       clearInterval(onclickIntervalId);
     }, false);
     canvas.addEventListener("mousemove", onmousemove, false);
