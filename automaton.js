@@ -2,8 +2,8 @@
   var canvas, context, canvasX, canvasY;
   var width = 20;
   var height = 20;
-  var cellWidth = 32;
-  var cellHeight = 32;
+  var cellWidth = 16;
+  var cellHeight = 16;
 
   var board = [[]];
 
@@ -111,7 +111,14 @@
         color = colors[i].value;        
       }
     }
-    return { state: "alive", color: color };
+    var state;
+    var states = document.getElementsByName("state");    
+    for (i = 0; i < states.length; i++) {      
+      if (states[i].checked) {
+        state = states[i].value;        
+      }
+    }
+    return { state: state, color: color };
   }
 
   window.onload = function() {
